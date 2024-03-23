@@ -4,15 +4,14 @@ import com.myproject.userbackendshopping.Exceptions.UserNotFoundException;
 import com.myproject.userbackendshopping.dtos.LoginRequestDto;
 import com.myproject.userbackendshopping.dtos.LogoutRequestDto;
 import com.myproject.userbackendshopping.dtos.SignUpRequestDto;
+import com.myproject.userbackendshopping.dtos.UserDto;
 import com.myproject.userbackendshopping.models.Tokens;
 import com.myproject.userbackendshopping.models.User;
 import com.myproject.userbackendshopping.services.UserService;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -44,6 +43,11 @@ public class UserController {
 //        Delete token if exixts , return 200 if exists else give 404 error
         userService.logOut(request.getToken());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/validate/{token}")
+    public UserDto validateToken(@PathVariable("token") @NonNull String token){
+        return UserDto.from(userService.validateToken(token));
     }
 }
 

@@ -16,7 +16,7 @@ public class User extends Base{
     private String hashedPassword;
     @ManyToMany
     private List<Roles> roles;
-    private boolean isVerified;
+    private boolean isEmailVerified;
 
 
 }

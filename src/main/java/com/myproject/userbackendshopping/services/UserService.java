@@ -50,6 +50,13 @@ public class UserService {
 //            Need to throw password doesn't match exception
             return null;
         }
+        Tokens savedToken = getTokens(user);
+
+        return savedToken;
+    }
+
+//    Extracting the token into a different method , to keep the login method clean
+    private Tokens getTokens(User user) {
         LocalDate today = LocalDate.now();
         LocalDate thirtyDaysLater = today.plus(30, ChronoUnit.DAYS);
         Date expiryDate = Date.from(thirtyDaysLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -58,10 +65,11 @@ public class UserService {
         tokens.setUser(user);
         tokens.setExpiryAt(expiryDate);
         tokens.setValue(RandomStringUtils.randomAlphanumeric(128));
+//        Change it into JWT
         Tokens savedToken = tokenRepository.save(tokens);
-
         return savedToken;
     }
+
     public void logOut(String tokens){
         Optional<Tokens> tokens1 = tokenRepository.findByValueAndDeleted(tokens,false);
         if (tokens1.isEmpty()){
@@ -70,6 +78,16 @@ public class UserService {
         Tokens tkn = tokens1.get();
         tkn.setDeleted(true);
         tokenRepository.save(tkn);
+    }
+
+    public User validateToken(String token){
+        Optional<Tokens> tkn = tokenRepository.findByValueAndDeletedAndExpiryAtGreaterThan(token,false,
+                new Date());
+        if(tkn.isEmpty()){
+            return null;
+        }
+//        Instead of validating via DB , validate using JWT
+        return tkn.get().getUser();
     }
 }
 
