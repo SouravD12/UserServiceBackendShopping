@@ -2,10 +2,12 @@ package com.myproject.userbackendshopping.controllers;
 
 import com.myproject.userbackendshopping.Exceptions.UserNotFoundException;
 import com.myproject.userbackendshopping.dtos.LoginRequestDto;
+import com.myproject.userbackendshopping.dtos.LogoutRequestDto;
 import com.myproject.userbackendshopping.dtos.SignUpRequestDto;
 import com.myproject.userbackendshopping.models.Tokens;
 import com.myproject.userbackendshopping.models.User;
 import com.myproject.userbackendshopping.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +38,12 @@ public class UserController {
 
         return userService.signUp(name,email,password);
     }
-    public ResponseEntity<Void>logout(){
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void>logout(@RequestBody LogoutRequestDto request){
 //        Delete token if exixts , return 200 if exists else give 404 error
-        return null;
+        userService.logOut(request.getToken());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
 

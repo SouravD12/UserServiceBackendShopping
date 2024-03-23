@@ -63,7 +63,13 @@ public class UserService {
         return savedToken;
     }
     public void logOut(String tokens){
-
+        Optional<Tokens> tokens1 = tokenRepository.findByValueAndDeleted(tokens,false);
+        if (tokens1.isEmpty()){
+            System.out.println("Token expired");
+        }
+        Tokens tkn = tokens1.get();
+        tkn.setDeleted(true);
+        tokenRepository.save(tkn);
     }
 }
 
